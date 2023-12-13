@@ -19,23 +19,52 @@
 
 #### Background
 
-`Berisikan uraian masalah yang diberikan secara umum, dan solusi yang diharapkan seperti apa.`
+Sebagai langkah strategis menuju efisiensi dan kualitas layanan yang lebih baik, PT. Maju Mundur Asoy memahami betapa pentingnya memantau usia setiap produk yang mereka simpan di gudang mereka. Prinsip ini tidak hanya merupakan langkah proaktif untuk mengelola stok dengan lebih efisien, tetapi juga menjadi landasan untuk kebijakan manajemen inventaris yang cerdas.
+
+Dalam mengelola gudang yang berisikan berbagai produk unggulan, mengetahui usia produk menjadi kunci utama untuk merencanakan penjualan dan promosi dengan lebih tepat sasaran. Dengan memahami siklus hidup setiap item, PT. Maju Mundur Asoy dapat mengidentifikasi produk yang mendekati tanggal kedaluwarsa atau masa paling optimal untuk pemasaran.
+
+Selain itu, pemahaman yang mendalam terhadap usia produk juga membantu perusahaan untuk menjaga kualitas barang yang disimpan. Produk dengan masa simpan yang panjang mungkin memerlukan kondisi penyimpanan khusus, sementara produk yang mendekati batas waktu kadaluwarsa perlu dijual atau didistribusikan secepat mungkin untuk menghindari kerugian.
+
+Manfaat lain dari pemantauan usia produk adalah efisiensi dalam perencanaan produksi. PT. Maju Mundur Asoy dapat mengatur produksi berdasarkan permintaan aktual dan menghindari overproduction yang dapat menyebabkan penumpukan stok yang tidak diinginkan.
 
 #### Expected Deliverable
 
-`Bersikan list ekspektasi hasil yang dicapai secara umum, misal bisa menyelesaikan Feature A, B, dan C.`
+diharapkan nantinya dari tabel yang tersedia akan dibuat sejumlah model sebagai berikut :
+
+1. Model untuk Menghitung Usia Produk (product_age.sql):
+    Fungsi: Menghitung usia produk dalam hari berdasarkan tanggal produksi hingga tanggal saat ini.
+    Penggunaan: Model ini dapat membantu Anda memantau usia produk secara real-time dan mengidentifikasi produk yang mendekati atau melewati batas waktu kedaluwarsa.
+
+2. Model untuk Menggabungkan Data Transaksi dan Produk (transaction_product.sql):
+    Fungsi: Menggabungkan informasi transaksi dengan data produk untuk analisis lebih lanjut.
+    Penggunaan: Dengan model ini, Anda dapat menganalisis performa penjualan produk, melihat tren, dan melakukan pemetaan hubungan antara transaksi dan produk tertentu.
+
+3. Model untuk Menganalisis Stok Tersedia (available_stock.sql):
+    Fungsi: Menyediakan data stok produk yang tersedia di berbagai lokasi gudang.
+    Penggunaan: Model ini membantu Anda memantau dan menganalisis ketersediaan stok produk di setiap lokasi gudang, memungkinkan perencanaan distribusi dan pengelolaan stok yang lebih efisien.
+
+4. Model untuk Statistik Kategori Produk (category_statistics.sql):
+    Fungsi: Menghitung jumlah produk dan rata-rata usia produk untuk setiap kategori produk.
+    Penggunaan: Dengan model ini, Anda dapat memahami performa kategori produk tertentu, melihat apakah ada kategori yang cenderung memiliki usia produk yang lebih pendek atau lebih panjang.
+
+5. Model untuk Menganalisis Data Waktu (time_analysis.sql):
+    Fungsi: Menyediakan statistik transaksi berdasarkan waktu (misalnya, jumlah transaksi per hari).
+    Penggunaan: Model ini memungkinkan Anda untuk melihat tren harian transaksi, mengidentifikasi pola atau periode sibuk, dan merencanakan kegiatan bisnis berdasarkan data waktu.
 
 #### Success Criteria
 
-`Sukses kriteria adalah penpaian dengan matris yang  kongkrit, contoh: menylesaikan fitur A dengan testing coverate 80%, implementati Trunk Base Development, Implementasi Code Quality, Implmentasi CI/CD, dan lain-lain.`
+1. Adanya sistem ELT/ETL untuk menciptakan expected deliverables (mandatory) 
+2. setiap kali sistem ELT/ETL berjalan, setiap model sesuai degan kondisi terkini (mandatory)
+3. visualisasikan model tersebut kedalam dashboard seperti metabase atau semacamnya (mandatory)
+4. perubahan data model terjadi secara real time (optional)
 
 #### Documentation
 
-`Jika ada dokumentasi tambahan yang diberikan ke Mentees.`
+-
 
 #### Assest
 
-`Jika ada file atau asset pendukung yang diberikan ke Mentees.`
+-
 
 ## 📆 Schedule Meeting and Format Mentoring
 
