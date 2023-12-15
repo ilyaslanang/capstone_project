@@ -90,7 +90,10 @@ dataset berada pada folder dataset
             - tanggal
             - jumlah_transaksi
     
-    berikut question yang diperlukan dalam pembuatan dashboard / visualisasi nya
+
+
+berikut question yang diperlukan dalam pembuatan dashboard / visualisasi nya
+
     Pertanyaan Mengenai Produk:
         1. "Apa saja produk-produk dengan usia paling muda dan paling tua?"
         2. "Bagaimana distribusi usia produk di seluruh kategori?"
