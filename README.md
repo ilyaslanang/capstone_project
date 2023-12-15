@@ -64,30 +64,31 @@ diharapkan nantinya dari tabel yang tersedia akan dibuat sejumlah model sebagai 
 
 #### Assest
 dataset berada pada folder dataset
-untuk model, schema nya :
-    1. Model untuk Menghitung Usia Produk (product_age.sql):
-        - product_id
-        - nama_produk
-        - usia_hari
-    2. Model untuk Menggabungkan Data Transaksi dan Produk (transaction_product.sql):
-        - transaction_id
-        - jumlah_pembelian
-        - jumlah_penjualan
-        - tanggal_transaksi
-        - nama_produk
-        - tanggal_produksi
-    3. Model untuk Menganalisis Stok Tersedia (available_stock.sql):
-        - product_id
-        - nama_produk
-        - jumlah_stok
-        - lokasi_gudang
-    4. Model untuk Statistik Kategori Produk (category_statistics.sql):
-        - nama_kategori
-        - jumlah_produk
-        - rata_usia_produk
-    5. Model untuk Menganalisis Data Waktu (time_analysis.sql):
-        - tanggal
-        - jumlah_transaksi
+
+    untuk model, schema nya :
+        1. Model untuk Menghitung Usia Produk (product_age.sql):
+            - product_id
+            - nama_produk
+            - usia_hari
+        2. Model untuk Menggabungkan Data Transaksi dan Produk (transaction_product.sql):
+            - transaction_id
+            - jumlah_pembelian
+            - jumlah_penjualan
+            - tanggal_transaksi
+            - nama_produk
+            - tanggal_produksi
+        3. Model untuk Menganalisis Stok Tersedia (available_stock.sql):
+            - product_id
+            - nama_produk
+            - jumlah_stok
+            - lokasi_gudang
+        4. Model untuk Statistik Kategori Produk (category_statistics.sql):
+            - nama_kategori
+            - jumlah_produk
+            - rata_usia_produk
+        5. Model untuk Menganalisis Data Waktu (time_analysis.sql):
+            - tanggal
+            - jumlah_transaksi
     
     berikut question yang diperlukan dalam pembuatan dashboard / visualisasi nya
     Pertanyaan Mengenai Produk:
