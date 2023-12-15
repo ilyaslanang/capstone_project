@@ -63,8 +63,62 @@ diharapkan nantinya dari tabel yang tersedia akan dibuat sejumlah model sebagai 
 -
 
 #### Assest
+dataset berada pada folder dataset
+untuk model, schema nya :
+    1. Model untuk Menghitung Usia Produk (product_age.sql):
+        - product_id
+        - nama_produk
+        - usia_hari
+    2. Model untuk Menggabungkan Data Transaksi dan Produk (transaction_product.sql):
+        - transaction_id
+        - jumlah_pembelian
+        - jumlah_penjualan
+        - tanggal_transaksi
+        - nama_produk
+        - tanggal_produksi
+    3. Model untuk Menganalisis Stok Tersedia (available_stock.sql):
+        - product_id
+        - nama_produk
+        - jumlah_stok
+        - lokasi_gudang
+    4. Model untuk Statistik Kategori Produk (category_statistics.sql):
+        - nama_kategori
+        - jumlah_produk
+        - rata_usia_produk
+    5. Model untuk Menganalisis Data Waktu (time_analysis.sql):
+        - tanggal
+        - jumlah_transaksi
+    
+    berikut question yang diperlukan dalam pembuatan dashboard / visualisasi nya
+    Pertanyaan Mengenai Produk:
+        1. "Apa saja produk-produk dengan usia paling muda dan paling tua?"
+        2. "Bagaimana distribusi usia produk di seluruh kategori?"
+        3. "Berapa jumlah produk di setiap kategori?"
 
--
+    Pertanyaan Mengenai Transaksi:
+        1. "Bagaimana tren penjualan produk dari waktu ke waktu?"
+        2. "Produk apa yang memiliki jumlah pembelian paling tinggi?"
+        3. "Berapa jumlah penjualan produk di setiap kategori?"
+
+    Pertanyaan Mengenai Stok:
+        1. "Berapa jumlah stok yang tersedia di setiap lokasi gudang?"
+        2. "Bagaimana distribusi stok produk di antara lokasi gudang?"
+        3. "Apa saja produk yang hampir habis stok?"
+
+    Pertanyaan Mengenai Kategori Produk:
+        1. "Berapa rata-rata usia produk di setiap kategori?"
+        2. "Apa saja kategori produk yang paling populer berdasarkan jumlah produk?"
+        3. "Bagaimana distribusi usia produk di setiap kategori?"
+
+    Pertanyaan Mengenai Waktu:
+        1. "Bagaimana tren jumlah transaksi dari waktu ke waktu?"
+        2. "Apa saja hari paling sibuk dalam hal transaksi?"
+        3. "Bagaimana distribusi jumlah transaksi per hari?"
+
+    Pertanyaan Mengenai Pelanggan dan Pemasok:
+        1. "Siapa pelanggan yang paling sering melakukan transaksi?"
+        2. "Berapa jumlah transaksi yang dilakukan oleh setiap pelanggan?"
+        3. "Apa saja pemasok yang menyediakan produk dengan jumlah stok terbanyak?"
 
 ## 📆 Schedule Meeting and Format Mentoring
 
