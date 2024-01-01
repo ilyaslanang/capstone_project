@@ -43,3 +43,4 @@ WORKDIR /usr/app
 ##
 FROM base as dbt-postgres
 RUN python -m pip install dbt-postgres
+RUN pip install pandas
