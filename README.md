@@ -25,14 +25,16 @@ since we are working on airflow, we need to ingest the dataset from local. So we
 
 ### Information for connention
 * postgres connection:
-` host    : localhost
+`
+ host    : localhost
   port    : 5432
   database: airflow
   username: airflow
   pass    : airflow
 `
 * airflow ([htt](http://localhost:8080/):
-` username: airflow
+`
+username: airflow
   pass    : airflow
 `
 
