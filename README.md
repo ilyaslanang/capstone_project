@@ -25,14 +25,15 @@ since we are working on airflow, we need to ingest the dataset from local. So we
 
 ### Information for connection
 * postgres connection:  
----
- host    : localhost  
- port    : 5432  
- database: airflow  
- username: airflow  
- pass    : airflow
----
+___
+  host    : localhost  
+  port    : 5432  
+  database: airflow  
+  username: airflow  
+  pass    : airflow
+___
 * airflow ([airflow](http://localhost:8080/):  
+
 ***
 username: airflow  
 pass    : airflow
@@ -40,5 +41,6 @@ pass    : airflow
 
 * run docker-compose by using:
 
-`docker-compose up -d`
+`docker-compose up -d`  
+
 after running this command, *dags* folder will be created, and we can start writing the code for ingestion.
