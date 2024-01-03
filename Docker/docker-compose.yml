@@ -1,16 +1,15 @@
 version: '3.8'
+
+volumes:
+  postgres-db-volume:
+
 x-airflow-common:
   &airflow-common
-  # In order to add custom dependencies or upgrade provider packages you can use your extended image.
-  # Comment the image line, place your Dockerfile in the directory where you placed the docker-compose.yaml
-  # and uncomment the "build" line below, Then run `docker-compose build` to build the images.
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.2}
-  # build: .
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    # For backward compatibility, with Airflow <2.3
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
@@ -18,16 +17,8 @@ x-airflow-common:
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
     AIRFLOW__CORE__LOAD_EXAMPLES: 'false'
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
-    # yamllint disable rule:line-length
-    # Use simple http server on scheduler for health checks
-    # See https://airflow.apache.org/docs/apache-airflow/stable/administration-and-deployment/logging-monitoring/check-health.html#scheduler-health-check-server
-    # yamllint enable rule:line-length
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
-    # WARNING: Use _PIP_ADDITIONAL_REQUIREMENTS option ONLY for a quick checks
-    # for other purpose (development, test and especially production usage) build/extend Airflow image.
-    _PIP_ADDITIONAL_REQUIREMENTS: ${_PIP_ADDITIONAL_REQUIREMENTS:-}
-
-    # SMTP config
+    _PIP_ADDITIONAL_REQUIREMENTS: /requirements.txt  # Reference the requirements.txt file
     AIRFLOW__SMTP__SMTP_HOST: 'smtp.gmail.com'
     AIRFLOW__SMTP__SMTP_STARTTLS: True
     AIRFLOW__SMTP__SMTP_SSL: False
@@ -35,13 +26,13 @@ x-airflow-common:
     AIRFLOW__SMTP__SMTP_PASSWORD: ${AIRFLOW__SMTP__SMTP_PASSWORD}
     AIRFLOW__SMTP__SMTP_PORT: 587
     AIRFLOW__SMTP__SMTP_MAIL_FROM: 'no-reply@gmail.com'
-
   volumes:
     - ${AIRFLOW_PROJ_DIR:-.}/dags:/opt/airflow/dags
     - ${AIRFLOW_PROJ_DIR:-.}/logs:/opt/airflow/logs
     - ${AIRFLOW_PROJ_DIR:-.}/config:/opt/airflow/config
     - ${AIRFLOW_PROJ_DIR:-.}/plugins:/opt/airflow/plugins
     - ${AIRFLOW_PROJ_DIR:-.}/config/airflow.cfg:/usr/local/airflow/airflow.cfg
+    - ./requirements.txt:/requirements.txt  # Mount the requirements.txt file
   user: "${AIRFLOW_UID:-50000}:0"
   depends_on:
     &airflow-common-depends-on
@@ -153,13 +144,10 @@ services:
   airflow-init:
     <<: *airflow-common
     entrypoint: /bin/bash
-    # yamllint disable rule:line-length
     command:
       - -c
       - |
-        # Clean existing DAGs directory
         rm -rf /opt/airflow/dags/*
-        # Continue with the original entrypoint command
         exec /entrypoint airflow version
     environment:
       <<: *airflow-common-env
@@ -216,8 +204,12 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   dbt:
-    build: .
-    image: dbt_in_docker_compose
-
-volumes:
-  postgres-db-volume:
+    build:
+      context: .
+      dockerfile: Dockerfile.dbt
+    command: sh -c "pip install dbt==0.22.0 && dbt"
+    volumes:
+      - .:/dbt
+      - ../venv:/dbt/venv
+    depends_on:
+      - postgres
