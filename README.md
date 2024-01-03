@@ -25,18 +25,18 @@ since we are working on airflow, we need to ingest the dataset from local. So we
 
 ### Information for connection
 * postgres connection:  
-`
+---
  host    : localhost  
  port    : 5432  
  database: airflow  
  username: airflow  
  pass    : airflow
-`
+---
 * airflow ([airflow](http://localhost:8080/):  
-`
+***
 username: airflow  
 pass    : airflow
-`
+***
 
 * run docker-compose by using:
 
