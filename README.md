@@ -10,9 +10,9 @@
 * Docker Compose
 
 # Create Docker folder
-In this step we make folder *Docker* for easier reading a file path. This folder contains Dockerfile and docker-compose
-Dockerfile needed for installation of dbt; such as python image, update the systems, install various dependencies and tools for dbt, set environment, and dbt-postgres configuration.
-Docker-compose built for Apache-Airflow along with additional services; PostgreSQL, Redis, Flower, Docker proxy, and dbt.
+In this step we make folder *Docker* for easier reading a file path. This folder contains Dockerfile and docker-compose  
+Dockerfile needed for installation of dbt; such as python image, update the systems, install various dependencies and tools for dbt, set environment, and dbt-postgres configuration.  
+Docker-compose built for Apache-Airflow along with additional services; PostgreSQL, Redis, Flower, Docker proxy, and dbt.  
 
 this folder also contain with datasets that we get earlier from our mentor.
 
@@ -20,11 +20,11 @@ this folder also contain with datasets that we get earlier from our mentor.
 since we are working on airflow, we need to ingest the dataset from local. So we moved them into dags folder.
 
 # Ingestion
-* first, make the environment:
+* first, make the environment:  
 `python -m venv venv`
 
-### Information for connention
-* postgres connection:
+### Information for connection
+* postgres connection:  
 `
  host    : localhost
   port    : 5432
@@ -32,7 +32,7 @@ since we are working on airflow, we need to ingest the dataset from local. So we
   username: airflow
   pass    : airflow
 `
-* airflow ([htt](http://localhost:8080/):
+* airflow ([airflow](http://localhost:8080/):  
 `
 username: airflow
   pass    : airflow
