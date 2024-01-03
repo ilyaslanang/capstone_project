@@ -1,9 +1,8 @@
-# Apache Airflow dependencies
 apache-airflow==2.7.2
 pydantic==1.10.13
-# Add any other Apache Airflow dependencies if needed
 
-# dbt dependencies
 dbt==0.22.0
 dbt-semantic-interfaces==0.4.2
-# Add any other dbt dependencies if needed
+dbt-core==1.7.4
+dbt-extractor==0.5.1
+dbt-postgres==1.7.4
