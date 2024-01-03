@@ -32,7 +32,7 @@ ___
   username: airflow  
   pass    : airflow
 ___
-* airflow ([airflow](http://localhost:8080/):  
+* airflow (http://localhost:8080/):  
 
 ***
 username: airflow  
