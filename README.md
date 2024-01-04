@@ -17,7 +17,9 @@ Docker-compose built for Apache-Airflow along with additional services; PostgreS
 this folder also contain with datasets that we get earlier from our mentor.
 
 ## Dataset
-since we are working on airflow, we need to ingest the dataset from local. So we moved them into dags folder.
+since we are working on airflow, we need to ingest the dataset from local. So we moved them into dags folder.  
+the dataset itself, have a csv and parquet type. for the csv file, we add the column to the right name using *read_data.py*, and for parquet we rename the column in the ingestion process.
+there are the *dataset_name*_updated.csv file that have been modified.
 
 # Ingestion
 * first, make the environment:  
@@ -25,7 +27,7 @@ since we are working on airflow, we need to ingest the dataset from local. So we
 
 ### Information for connection
 * postgres connection:  
-___
+
   host    : localhost  
   port    : 5432  
   database: airflow  
@@ -34,7 +36,7 @@ ___
 ___
 * airflow (http://localhost:8080/):  
 
-***
+
 username: airflow  
 pass    : airflow
 ***
@@ -43,4 +45,4 @@ pass    : airflow
 
 `docker-compose up -d`  
 
-after running this command, *dags* folder will be created, and we can start writing the code for ingestion.
+after running this command, *dags* folder will be created, and we can start writing the code for ingestion inside that folder.
