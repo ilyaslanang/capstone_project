@@ -2,6 +2,7 @@ version: '3.8'
 
 volumes:
   postgres-db-volume:
+  ingestion-db-volume:
 
 x-airflow-common:
   &airflow-common
@@ -11,6 +12,7 @@ x-airflow-common:
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+    AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion/ingestion
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
@@ -56,6 +58,25 @@ services:
       retries: 5
       start_period: 5s
     restart: always
+
+  ingestion_postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: ingest
+      POSTGRES_PASSWORD: ingest
+      POSTGRES_DB: ingestion
+    volumes:
+      - ingestion-db-volume:/var/lib/postgresql/data
+    ports:
+      - "5445:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "ingest"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+
 
   redis:
     image: redis:latest
