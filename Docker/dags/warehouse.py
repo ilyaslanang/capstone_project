@@ -1,6 +1,5 @@
 from airflow import DAG
 from datetime import datetime
-from airflow.providers.postgres.operators.postgres import PostgresOperator
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.operators.python import PythonOperator
 import os
@@ -11,8 +10,7 @@ with DAG(
     schedule=None,
     start_date=datetime(2023, 12, 31),
     catchup=False
-) as dag:
-    
+) as dag:   
     def load_data(file_path):
         if os.name == 'nt':
             file_path = file_path.replace('/', '\\')
@@ -46,7 +44,7 @@ with DAG(
 
 
 
-    create_table_task = PythonOperator(
+    create_table_task=PythonOperator(
         task_id='ingestion_for_capstone',
         python_callable=create_table,
     )

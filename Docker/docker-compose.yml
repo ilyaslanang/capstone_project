@@ -205,7 +205,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.dbt
-    command: sh -c "pip install dbt==0.22.0 && dbt"
     volumes:
       - .:/dbt
       - ../venv:/dbt/venv

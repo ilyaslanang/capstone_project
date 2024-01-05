@@ -3,4 +3,4 @@ select
     , tanggal as dates
     , bulan as months
     , tahun as years
-from timedimension
+from time_dimension

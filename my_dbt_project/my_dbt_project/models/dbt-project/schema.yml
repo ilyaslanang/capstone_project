@@ -1,7 +1,7 @@
 version: 2
 
 sources:
-  - name: dbt-project
+  - name: my_dbt_project
     database: airflow
     schema: public
 
@@ -87,7 +87,7 @@ sources:
             tests:
               - not_null
 
-      - name: productcategory
+      - name: product_category
         columns:
           - name: category_id
             description: "Unique identifier for each product_cateory"
@@ -131,7 +131,7 @@ sources:
             tests:
               - not_null
 
-      - name: timedimension
+      - name: time_dimension
         columns:
           - name: date_id
             description: "Unique identifier for each time-dimension"
@@ -151,7 +151,7 @@ sources:
             tests:
               - not_null
 
-      - name: warehouselocation
+      - name: warehouse_location
         columns:
           - name: location_id
             description: "Unique identifier for each warehouse_location"
