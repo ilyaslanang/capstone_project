@@ -1,0 +1,161 @@
+version: 2
+
+models:
+
+  - name: stg_customer
+    description: "staging model for customer"
+    columns:
+      - name: customer_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+      - name: customer_name
+        description: "name of the product"
+        tests:
+          - not_null
+    # tests:
+    #       - dbt_utils.equal_rowcount:
+    #           compare_model: ref('customer')
+
+  - name: stg_product
+    description: "staging model for transaction product"
+    columns:
+      - name: product_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+    columns:
+      - name: transaction_date
+        description: "transaction date of the product"
+        tests:
+          - not_null
+    columns:
+      - name: product_name
+        description: "name of the product"
+        tests:
+          - not_null
+    columns:
+      - name: production_date
+        description: "production date of the product"
+        tests:
+          - not_null
+    # tests:
+    #   - dbt_utils.unique_combination_of_columns:
+    #       combination_of_columns:
+    #         - product_id
+
+  - name: stg_productcategory
+    description: "staging model for product category"
+    columns:
+      - name: category_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+    columns:
+      - name: category_name
+        description: "name of the category"
+        tests:
+          - not_null
+
+  - name: stg_stock
+    description: "staging model for stock"
+    columns:
+      - name: stock_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+    columns:
+      - name: product_id
+        description: "The primary key of the product"
+        tests:
+          - not_null
+    columns:
+      - name: warehouse_loc
+        description: "The warehouse location of production stock of the product"
+        tests:
+          - not_null
+
+  - name: stg_supplier
+    description: "staging model for supplier"
+    columns:
+      - name: supplier_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+    columns:
+      - name: supplier_name
+        description: "supllier name of the product"
+        tests:
+          - not_null
+    columns:
+      - name: supplier_contact
+        description: "supllier contact of the product"
+        tests:
+          - not_null
+
+  - name: stg_timedimension
+    description: "staging model for time dimension"
+    columns:
+      - name: date_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+    columns:
+      - name: months
+        description: "month of the product"
+        tests:
+          - not_null
+    columns:
+      - name: years
+        description: "years of the product"
+        tests:
+          - not_null
+
+  - name: stg_transaction
+    description: "staging model for transaction"
+    columns:
+      - name: transaction_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+    columns:
+      - name: product_id
+        description: "The primary key of the product"
+        tests:
+          - not_null
+    columns:
+      - name: purchase_amount
+        description: "purchase amount of the transaction"
+        tests:
+          - not_null
+    columns:
+      - name: sales_amount
+        description: "sales amount of the transaction"
+        tests:
+          - not_null
+    columns:
+      - name: transaction_date
+        description: "transaction date of the transaction"
+        tests:
+          - not_null
+
+  - name: stg_warehouse
+    description: "staging model for warehouse location"
+    columns:
+      - name: location_id
+        description: "The primary key for this table"
+        tests:
+          - unique
+          - not_null
+    columns:
+      - name: location_name
+        description: "warehouse location of the product"
+        tests:
+          - not_null
