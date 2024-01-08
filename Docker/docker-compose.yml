@@ -1,18 +1,18 @@
 version: '3.8'
 
 volumes:
-  postgres-db-volume:
-  ingestion-db-volume:
+  postgres-volume:
+  metabase-volume:
+  ingestion-volume:
 
-x-airflow-common:
-  &airflow-common
+x-airflow-common: &airflow-common
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.2}
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion/ingestion
+    AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@postgres:5432/ingestion
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
@@ -21,8 +21,8 @@ x-airflow-common:
     AIRFLOW__API__AUTH_BACKENDS: 'airflow.api.auth.backend.basic_auth,airflow.api.auth.backend.session'
     AIRFLOW__SCHEDULER__ENABLE_HEALTH_CHECK: 'true'
     AIRFLOW__SMTP__SMTP_HOST: 'smtp.gmail.com'
-    AIRFLOW__SMTP__SMTP_STARTTLS: True
-    AIRFLOW__SMTP__SMTP_SSL: False
+    AIRFLOW__SMTP__SMTP_STARTTLS: 'True'
+    AIRFLOW__SMTP__SMTP_SSL: 'False'
     AIRFLOW__SMTP__SMTP_USER: ${AIRFLOW__SMTP__SMTP_USER}
     AIRFLOW__SMTP__SMTP_PASSWORD: ${AIRFLOW__SMTP__SMTP_PASSWORD}
     AIRFLOW__SMTP__SMTP_PORT: 587
@@ -42,6 +42,25 @@ x-airflow-common:
       condition: service_healthy
 
 services:
+  metabase:
+    image: metabase/metabase
+    environment:
+      MB_DB_TYPE: postgres
+      MB_DB_DBNAME: metabase
+      MB_DB_PORT: 5432
+      MB_DB_USER: metabase
+      MB_DB_PASS: metabase
+      MB_DB_HOST: metabase_pg
+      MB_JETTY_HOST: 0.0.0.0
+      MB_JETTY_PORT: 3000
+    volumes:
+      - ./metabase-data:/metabase-data
+    depends_on:
+      - metabase_pg
+    ports:
+      - "3000:3000"
+    restart: always
+
   postgres:
     image: postgres:13
     environment:
@@ -49,9 +68,9 @@ services:
       POSTGRES_PASSWORD: airflow
       POSTGRES_DB: airflow
     volumes:
-      - postgres-db-volume:/var/lib/postgresql/data
+      - postgres-volume:/var/lib/postgresql/data
     ports:
-      - "5432:5432"
+      - "5435:5432"
     healthcheck:
       test: ["CMD", "pg_isready", "-U", "airflow"]
       interval: 10s
@@ -59,14 +78,31 @@ services:
       start_period: 5s
     restart: always
 
-  ingestion_postgres:
+  metabase_pg:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: metabase
+      POSTGRES_PASSWORD: metabase
+      POSTGRES_DB: metabase
+    volumes:
+      - metabase-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "metabase"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
+  ingestion:
     image: postgres:13
     environment:
       POSTGRES_USER: ingest
       POSTGRES_PASSWORD: ingest
-      POSTGRES_DB: ingestion
+      POSTGRES_DB: ingest
     volumes:
-      - ingestion-db-volume:/var/lib/postgresql/data
+      - ingestion-volume:/var/lib/postgresql/data
     ports:
       - "5445:5432"
     healthcheck:
@@ -75,8 +111,6 @@ services:
       retries: 5
       start_period: 5s
     restart: always
-
-
 
   redis:
     image: redis:latest
@@ -92,6 +126,9 @@ services:
 
   airflow-webserver:
     <<: *airflow-common
+    environment:
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion:5432/ingestion
     command: webserver
     ports:
       - "8080:8080"
@@ -104,14 +141,14 @@ services:
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+      ingestion:
+        condition: service_healthy
 
   airflow-scheduler:
     <<: *airflow-common
     command: scheduler
     healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:8974/health"]
+      test: ["CMD", "curl", "--fail", "http://localhost:8080/health"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -121,12 +158,13 @@ services:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
 
   airflow-worker:
     <<: *airflow-common
     command: celery worker
     healthcheck:
-      # yamllint disable rule:line-length
       test:
         - "CMD-SHELL"
         - 'celery --app airflow.providers.celery.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}" || celery --app airflow.executors.celery_executor.app inspect ping -d "celery@$${HOSTNAME}"'
@@ -136,14 +174,16 @@ services:
       start_period: 30s
     environment:
       <<: *airflow-common-env
-      # Required to handle warm shutdown of the celery workers properly
-      # See https://airflow.apache.org/docs/docker-stack/entrypoint.html#signal-propagation
       DUMB_INIT_SETSID: "0"
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
       airflow-init:
         condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      ingestion:
+        condition: service_healthy
 
   airflow-triggerer:
     <<: *airflow-common
@@ -157,8 +197,10 @@ services:
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      ingestion:
+        condition: service_healthy
 
   airflow-init:
     <<: *airflow-common
@@ -178,6 +220,9 @@ services:
     user: "0:0"
     volumes:
       - ${AIRFLOW_PROJ_DIR:-.}:/sources
+    depends_on:
+      - postgres
+      - ingestion
 
   airflow-cli:
     <<: *airflow-common
@@ -191,29 +236,11 @@ services:
       - bash
       - -c
       - airflow
-
-  # You can enable flower by adding "--profile flower" option e.g. docker-compose --profile flower up
-  # or by explicitly targeted on the command line e.g. docker-compose up flower.
-  # See: https://docs.docker.com/compose/profiles/
-  flower:
-    <<: *airflow-common
-    command: celery flower
-    profiles:
-      - flower
-    ports:
-      - "5555:5555"
-    healthcheck:
-      test: ["CMD", "curl", "--fail", "http://localhost:5555/"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-      start_period: 30s
-    restart: always
     depends_on:
       <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
-  
+      postgres:
+        condition: service_healthy
+
   docker-proxy:
     image: bobrik/socat
     command: "TCP4-LISTEN:2375,fork,reuseaddr UNIX-CONNECT:/var/run/docker.sock"
@@ -221,13 +248,3 @@ services:
       - "2376:2375"
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
-
-  dbt:
-    build:
-      context: .
-      dockerfile: Dockerfile.dbt
-    volumes:
-      - .:/dbt
-      - ../venv:/dbt/venv
-    depends_on:
-      - postgres
