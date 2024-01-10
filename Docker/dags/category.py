@@ -2,6 +2,7 @@ from airflow import DAG
 from datetime import datetime
 from airflow.providers.postgres.hooks.postgres import PostgresHook
 from airflow.operators.python import PythonOperator
+from airflow.operators.bash import BashOperator
 import os
 import pandas as pd
 
@@ -43,11 +44,10 @@ with DAG(
         
         conn.commit()
 
-
-
     create_table_task = PythonOperator(
         task_id='ingestion_for_capstone',
         python_callable=create_table,
+        dag=dag,
     )
 
     create_table_task
