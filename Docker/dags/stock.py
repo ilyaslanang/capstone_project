@@ -6,7 +6,7 @@ import os
 import pandas as pd
 
 with DAG(
-    dag_id="ingestion_capstone",
+    dag_id="ingestion_stock",
     schedule=None,
     start_date=datetime(2023, 12, 31),
     catchup=False

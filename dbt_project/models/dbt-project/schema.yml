@@ -1,8 +1,8 @@
 version: 2
 
 sources:
-  - name: my_dbt_project
-    database: airflow
+  - name: dbt_project
+    database: ingest
     schema: public
 
     tables:

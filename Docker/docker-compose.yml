@@ -13,7 +13,7 @@ x-airflow-common: &airflow-common
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
     AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
     AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@postgres:5432/ingestion
+    AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion:5445/ingestion
     AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
@@ -129,7 +129,7 @@ services:
     <<: *airflow-common
     environment:
       AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion:5432/ingestion
+      AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion:5445/ingestion
     command: webserver
     ports:
       - "8080:8080"
@@ -251,8 +251,5 @@ services:
       - /var/run/docker.sock:/var/run/docker.sock
 
   dbt:
-    image: dbt/core:latest
-    volumes:
-      - ./../my_dbt_project/my_dbt_project:dbt-volume
-    depends_on:
-      - postgres
+    build: .
+    image: dbt_in_docker_compose
