@@ -176,6 +176,8 @@ services:
     environment:
       <<: *airflow-common-env
       DUMB_INIT_SETSID: "0"
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
+      AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion:5445/ingestion
     restart: always
     depends_on:
       <<: *airflow-common-depends-on
