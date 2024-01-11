@@ -47,5 +47,5 @@ models:
     dbt-data-model:
       +materialized: view
       +schema: data_model
-      +database: dbt-project
+      +database: ingest
 
