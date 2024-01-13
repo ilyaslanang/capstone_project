@@ -41,11 +41,11 @@ models:
       +schema: _stg
       +database: ingest
     dbt-fct:
-      +materialized: table_fct
+      +materialized: table
       +schema: _fct
       +database: ingest
     dbt-data-model:
-      +materialized: table_data_model
+      +materialized: table
       +schema: data_model
       +database: ingest
 

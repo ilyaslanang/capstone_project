@@ -65,6 +65,29 @@ with DAG(
         ],
         mount_tmp_dir=False
 )
+    dbt_test_command = DockerOperator(
+        task_id='dbt_test_cmd',
+        image='dbt_in_docker_compose',
+        container_name='dbt_test',
+        api_version='auto',
+        auto_remove='force',
+        command="bash -c 'dbt --no-partial-parse test'",
+        docker_url="tcp://docker-proxy:2375",
+        network_mode="bridge",
+        mounts = [
+            Mount(
+                source=f"{local_path}/dbt_project",
+                target="/usr/app",
+                type="bind"
+            ),
+            Mount(
+                source=f"{local_path}/dbt-profiles",
+                target="/root/.dbt",
+                type="bind"
+            )
+        ],
+        mount_tmp_dir=False
+)
     
 end = EmptyOperator(task_id="end")
 
