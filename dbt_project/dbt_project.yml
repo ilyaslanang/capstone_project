@@ -35,17 +35,17 @@ models:
     # Config indicated by + and applies to all files under models/example/
     dbt-project:
       +schema: public
-      +database: ingest
+      +database: mydb
     dbt-stg:
       +materialized: table
       +schema: _stg
-      +database: ingest
+      +database: mydb
     dbt-fct:
-      +materialized: table
+      +materialized: table_fct
       +schema: _fct
-      +database: ingest
+      +database: mydb
     dbt-data-model:
-      +materialized: view
+      +materialized: table_data_model
       +schema: data_model
-      +database: ingest
+      +database: mydb
 

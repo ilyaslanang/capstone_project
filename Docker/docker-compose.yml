@@ -2,19 +2,16 @@ version: '3.8'
 
 volumes:
   postgres-volume:
-  metabase-volume:
-  ingestion-volume:
-  dbt-volume:
+
 
 x-airflow-common: &airflow-common
   image: ${AIRFLOW_IMAGE_NAME:-apache/airflow:2.7.2}
   environment:
     &airflow-common-env
     AIRFLOW__CORE__EXECUTOR: CeleryExecutor
-    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-    AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion:5445/ingestion
-    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://airflow:airflow@postgres/airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:pass@postgres/mydb
+    AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:pass@postgres/mydb
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://admin:pass@postgres/mydb
     AIRFLOW__CELERY__BROKER_URL: redis://:@redis:6379/0
     AIRFLOW__CORE__FERNET_KEY: ''
     AIRFLOW__CORE__DAGS_ARE_PAUSED_AT_CREATION: 'true'
@@ -43,94 +40,49 @@ x-airflow-common: &airflow-common
       condition: service_healthy
 
 services:
+  postgres:
+    image: postgres:13
+    environment:
+      POSTGRES_USER: admin
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: mydb
+    volumes:
+      - postgres-volume:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "admin"]
+      interval: 10s
+      retries: 5
+      start_period: 5s
+    restart: always
+
   metabase:
     image: metabase/metabase
     environment:
       MB_DB_TYPE: postgres
-      MB_DB_DBNAME: metabase
+      MB_DB_DBNAME: mydb
       MB_DB_PORT: 5432
-      MB_DB_USER: metabase
-      MB_DB_PASS: metabase
-      MB_DB_HOST: metabase_pg
+      MB_DB_USER: admin
+      MB_DB_PASS: pass
+      MB_DB_HOST: postgres
       MB_JETTY_HOST: 0.0.0.0
       MB_JETTY_PORT: 3000
     volumes:
       - ./metabase-data:/metabase-data
     depends_on:
-      - metabase_pg
+      - postgres
     ports:
       - "3000:3000"
-    restart: always
-
-  postgres:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: airflow
-      POSTGRES_PASSWORD: airflow
-      POSTGRES_DB: airflow
-    volumes:
-      - postgres-volume:/var/lib/postgresql/data
-    ports:
-      - "5435:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "airflow"]
-      interval: 10s
-      retries: 5
-      start_period: 5s
-    restart: always
-
-  metabase_pg:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: metabase
-      POSTGRES_PASSWORD: metabase
-      POSTGRES_DB: metabase
-    volumes:
-      - metabase-volume:/var/lib/postgresql/data
-    ports:
-      - "5432:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "metabase"]
-      interval: 10s
-      retries: 5
-      start_period: 5s
-    restart: always
-
-  ingestion:
-    image: postgres:13
-    environment:
-      POSTGRES_USER: ingest
-      POSTGRES_PASSWORD: ingest
-      POSTGRES_DB: ingest
-    volumes:
-      - ingestion-volume:/var/lib/postgresql/data
-    ports:
-      - "5445:5432"
-    healthcheck:
-      test: ["CMD", "pg_isready", "-U", "ingest"]
-      interval: 10s
-      retries: 5
-      start_period: 5s
-    restart: always
-
-  redis:
-    image: redis:latest
-    expose:
-      - 6379
-    healthcheck:
-      test: ["CMD", "redis-cli", "ping"]
-      interval: 10s
-      timeout: 30s
-      retries: 50
-      start_period: 30s
     restart: always
 
   airflow-webserver:
     <<: *airflow-common
     environment:
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion:5445/ingestion
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:pass@postgres/mydb
     command: webserver
+    depends_on:
+      - postgres
     ports:
       - "8080:8080"
     healthcheck:
@@ -140,10 +92,7 @@ services:
       retries: 5
       start_period: 30s
     restart: always
-    depends_on:
-      <<: *airflow-common-depends-on
-      ingestion:
-        condition: service_healthy
+
 
   airflow-scheduler:
     <<: *airflow-common
@@ -176,17 +125,13 @@ services:
     environment:
       <<: *airflow-common-env
       DUMB_INIT_SETSID: "0"
-      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://airflow:airflow@postgres/airflow
-      AIRFLOW__INGESTION__SQL_ALCHEMY_CONN: postgresql+psycopg2://ingest:ingest@ingestion:5445/ingestion
+      AIRFLOW__CORE__SQL_ALCHEMY_CONN: postgresql+psycopg2://admin:pass@postgres/mydb
     restart: always
     depends_on:
-      <<: *airflow-common-depends-on
-      airflow-init:
-        condition: service_completed_successfully
-      postgres:
-        condition: service_healthy
-      ingestion:
-        condition: service_healthy
+      - postgres
+      - airflow-init
+    ports:
+      - "8793:8793"  
 
   airflow-triggerer:
     <<: *airflow-common
@@ -199,11 +144,7 @@ services:
       start_period: 30s
     restart: always
     depends_on:
-      <<: *airflow-common-depends-on
-      postgres:
-        condition: service_healthy
-      ingestion:
-        condition: service_healthy
+      - postgres
 
   airflow-init:
     <<: *airflow-common
@@ -225,24 +166,18 @@ services:
       - ${AIRFLOW_PROJ_DIR:-.}:/sources
     depends_on:
       - postgres
-      - ingestion
 
-  airflow-cli:
-    <<: *airflow-common
-    profiles:
-      - debug
-    environment:
-      <<: *airflow-common-env
-      CONNECTION_CHECK_MAX_COUNT: "0"
-    # Workaround for entrypoint issue. See: https://github.com/apache/airflow/issues/16252
-    command:
-      - bash
-      - -c
-      - airflow
-    depends_on:
-      <<: *airflow-common-depends-on
-      postgres:
-        condition: service_healthy
+  redis:
+    image: redis:latest
+    expose:
+      - 6379
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 30s
+      retries: 50
+      start_period: 30s
+    restart: always
 
   docker-proxy:
     image: bobrik/socat

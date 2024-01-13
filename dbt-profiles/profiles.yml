@@ -2,11 +2,11 @@ dbt_project:
   target: dev
   outputs:
     dev:
-      dbname: ingest
+      user: admin
+      password: pass
+      dbname: mydb
       host: localhost
-      password: ingest
-      port: 5445
+      port: 5432
       schema: public
       threads: 1
       type: postgres
-      user: ingest
