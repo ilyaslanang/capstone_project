@@ -2,7 +2,7 @@ version: 2
 
 sources:
   - name: dbt-project
-    database: mydb
+    database: ingest
     schema: public
 
     tables:

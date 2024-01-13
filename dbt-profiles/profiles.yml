@@ -2,11 +2,11 @@ dbt_project:
   target: dev
   outputs:
     dev:
-      user: admin
-      password: pass
-      dbname: mydb
-      host: localhost
-      port: 5432
+      user: ingest
+      password: ingest
+      dbname: ingest
+      host: host.docker.internal
+      port: 5445
       schema: public
       threads: 1
       type: postgres
