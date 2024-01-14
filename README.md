@@ -89,7 +89,7 @@ Fill the username and password with : `airflow`
 This is one of the example of the code [here](https://github.com/ilyaslanang/capstone_project/blob/main/Docker/dags/category.py)  
 Add postgres connection in DAGs script and match it with configuration connection in airflow. 
 
-[image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/connection_in%20airflow.png)
+![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/connection_in%20airflow.png)
 
 Write the *pg_conn_id* in the DAGs scripts then we must to take a look closely on the path in your local system for the dataset. It's important to aim the right path and connection.  
 
@@ -100,13 +100,13 @@ Writing DAGs scripts is the first step for ingestion process. Once it's done, yo
 
 This will pass to Dags in airflow dashboard.
 
-[image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/airflow_dashboard.png)
+![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/airflow_dashboard.png)
 
 Run it manually will trigger the ingestion into database we've prepared.  
 
 After successfully ingest on airflow, the database *ingest* will look like this:  
 
-[image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/database_ingest.png)
+![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/database_ingest.png)
 
 ___
 
@@ -145,8 +145,8 @@ This will pass to airflow dashboard. Run this manually will trigger the tasks.
 
 The result of the dbt test should be like this:  
 
-[image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/dbt_logs.png)https://github.com/ilyaslanang/capstone_project/blob/main/documentations/dbt_logs.png
+![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/dbt_logs.png)https://github.com/ilyaslanang/capstone_project/blob/main/documentations/dbt_logs.png
 
 and this is the database now:  
 
-[image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/after%20dbt%20run%20in%20database.png)https://github.com/ilyaslanang/capstone_project/blob/main/documentations/after%20dbt%20run%20in%20database.png
+![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/after%20dbt%20run%20in%20database.png)https://github.com/ilyaslanang/capstone_project/blob/main/documentations/after%20dbt%20run%20in%20database.png
