@@ -23,8 +23,8 @@ the dataset itself, have a csv and parquet type. for the csv file, we add the co
 there are the *dataset_name*_updated.csv file that have been modified.
 The original dataset have 8 files, but we need to modify the 4 csv files. So total of the updated dataset in dags folder is 12 files.  
 
-### Information for connection
-* airflow metadata database connection:
+## Information for connection
+### airflow metadata database connection:
 
 * port    : 5436
 * database: airflow
@@ -33,13 +33,13 @@ The original dataset have 8 files, but we need to modify the 4 csv files. So tot
 
   
 ___
-* airflow (http://localhost:8080/):
+### airflow (http://localhost:8080/):
   
 * username: airflow
 * pass    : airflow
 ___  
 
-* metabase database connection:
+### metabase database connection:
   
 * port: 5432  
 * database: metabase  
@@ -48,13 +48,13 @@ ___
 
 ___
 
-* metabase (httpp://localhost:3000/):
+### metabase (httpp://localhost:3000/):
 * 
 
 
 ___
 
-warehouse database connection:
+### warehouse database connection:
 
 * port: 5445
 * database: ingest
@@ -120,13 +120,13 @@ inside the dbt project, we need to run this command:
 This command will trigger to create a profiles if you haven't one.  
 Fill the configuration with this values:  
 ` 
-      user: ingest
-      password: ingest
-      dbname: ingest
-      host: host.docker.internal
-      port: 5445
-      schema: public
-      type: postgres
+      user: ingest  
+      password: ingest  
+      dbname: ingest  
+      host: host.docker.internal  
+      port: 5445  
+      schema: public  
+      type: postgres  
 `
  
 or you can see the complete configuration in this [file](https://github.com/ilyaslanang/capstone_project/blob/main/dbt-profiles/profiles.yml)  
