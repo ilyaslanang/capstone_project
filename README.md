@@ -119,7 +119,7 @@ inside the dbt project, we need to run this command:
 `dbt init`  
 This command will trigger to create a profiles if you haven't one.  
 Fill the configuration with this values:  
-` 
+```
       user: ingest  
       password: ingest  
       dbname: ingest  
@@ -127,7 +127,7 @@ Fill the configuration with this values:
       port: 5445  
       schema: public  
       type: postgres  
-`
+```
  
 or you can see the complete configuration in this [file](https://github.com/ilyaslanang/capstone_project/blob/main/dbt-profiles/profiles.yml)  
 
