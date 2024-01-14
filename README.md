@@ -145,8 +145,8 @@ This will pass to airflow dashboard. Run this manually will trigger the tasks.
 
 The result of the dbt test should be like this:  
 
-![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/dbt_logs.png)https://github.com/ilyaslanang/capstone_project/blob/main/documentations/dbt_logs.png
+![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/dbt_logs.png)
 
 and this is the database now:  
 
-![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/after%20dbt%20run%20in%20database.png)https://github.com/ilyaslanang/capstone_project/blob/main/documentations/after%20dbt%20run%20in%20database.png
+![image](https://github.com/ilyaslanang/capstone_project/blob/main/documentations/after%20dbt%20run%20in%20database.png)
