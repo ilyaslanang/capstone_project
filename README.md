@@ -48,7 +48,7 @@ ___
 
 ___
 
-### metabase (httpp://localhost:3000/):
+### metabase (http://localhost:3000/):
 
 * port: using `ipconfig` command, it's different every local
 * username: ingest
@@ -134,9 +134,80 @@ Fill the configuration with this values:
  
 or you can see the complete configuration in this [file](https://github.com/ilyaslanang/capstone_project/blob/main/dbt-profiles/profiles.yml)  
 
-elsa yang lanjut buat dbt_project
+
+We need to run this command to install package.yml which is used to run dbt expectation. It aims to test the data warehouse that has been created:  
+`dbt deps`  
+You can see the complete configuration in this [*package.yml* ](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/packages.yml)
+
+### Data Model 1
 
 
+`(expired_date - production_date) AS usia_hari` This expression calculates the age of the product in days. Subtracting the production date from the expiration date gives the number of days the product has been in existence.
+
+The `FROM` statement specifies the data source table used for information extraction. Here, the source table is mentioned using the notation `{{ ref('stg_product') }}`. This indicates that a source table named `stg_product` will be used. The `{{ ref(...) }}` notation is dbt's way of referring to tables or other dbt models in a project.
+
+You can see the complete configuration in this [*fct_product_age.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_product_age.sql)
+
+### Data Model 2
+
+`COALESCE(count(stg_product.category_id), 0) AS product_count` This is a `COUNT` aggregation function that counts the number of products in each category. The `COALESCE` function is used to replace the NULL value with 0 if no products are found in the category.
+
+`COALESCE(AVG((expired_date - production_date)), 0) AS average_product_age` This is an `AVG` aggregation function that calculates the average age of products in each category. The `COALESCE` function is also used here to replace NULL values ​​with 0 if no age data is available.
+
+`COALESCE(sum(sales_amount), 0) as sales_amount` This is a `SUM` aggregation function that calculates total sales in each category. The `COALESCE` function is used to replace NULL values ​​with 0 if no sales data is available.
+
+`LEFT JOIN` Performs a join with the LEFT JOIN type, which will return all rows from the left table `(stg_productcategory)` and matching rows from the right table `(stg_product)`. If there is no correspondence, the columns of the right table will be filled with NULL values.
+
+`ON stg_product.category_id = stg_productcategory.category_id` Specifies merge conditions based on the category_id column. Two other joins are performed on the stg_transaction table using the product_id column as the key.
+
+`GROUP BY nama_kategori` This script groups query results based on the category_name column. This is necessary because we perform aggregation operations (COUNT, AVG, SUM) at the category level. As a result, each row in the results will represent a single category with corresponding aggregation statistics.
+
+You can see the complete configuration in this [*fct_category_statistic.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_category_statistic.sql)
+
+### Data Model 3
+
+`LEFT JOIN` Performs a join with the LEFT JOIN type, which will return all rows from the left table `(stg_stock)` and matching rows from the right table `(stg_product)`. If there is no correspondence, the columns of the right table will be filled with NULL values.
+
+`ON stg_product.product_id = stg_stock.product_id` Specifies the merge condition based on the product_id column
+
+`ORDER BY product_id` This clause sorts query results based on the product_id column in ascending order (default). So, the results will be sorted by product ID.
+
+You can see the complete configuration in this [*fct_available_stock.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_available_stock.sql)
+
+### Data Model 4
+
+`LEFT JOIN` Performs a join with the LEFT JOIN type, which will return all rows from the left table `(stg_transaction)` and matching rows from the right table `(stg_product)`. If there is no correspondence, the columns of the right table will be filled with NULL values.
+
+`ON stg_product.product_id = stg_transaction.product_id` Specifies the merge condition based on the product_id column.
+
+`ORDER BY transaction_id` This clause sorts query results based on the `transaction_id` column in ascending order (default). So, the results will be sorted based on transaction ID.
+
+You can see the complete configuration in this [*fct_transaction_product.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_transaction_product.sql)
+
+### Data Model 5
+
+This entire query retrieves two columns (date and transaction_amount) from the stg_transaction table. The column names and aliases provided are only names for query results and do not affect the data retrieved from the table.
+
+You can see the complete configuration in this [*fct_time_analysis.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_time_analysis.sql)
+
+### Schema of the Data Model
+
+The explanation below covers all models:
+
+Model `fct_product_age` :
+Description: Staging model for product age.
+
+
+The columns include (columns):
+
+* `Product_id` : product ID (Primary Key).
+* `Nama_produk` : Product name.
+* `usia_hari` : Product age in days.
+
+
+The test include (tests):
+
+`dbt_expectations.expect_table_row_count_to_equal_other_table` : Checks the row count of this model and compares it to the row count of the stg_product table or model. Some optional parameters are used such as group_by, compare_group_by, factor, row_condition, and compare_row_condition.
 
 ### Running the DBT on airflow
 
