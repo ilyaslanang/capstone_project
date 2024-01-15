@@ -139,7 +139,7 @@ We need to run this command to install package.yml which is used to run dbt expe
 `dbt deps`  
 You can see the complete configuration in this [*package.yml* ](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/packages.yml)
 
-### Data Model 1
+# Data Model 1
 
 
 `(expired_date - production_date) AS usia_hari` This expression calculates the age of the product in days. Subtracting the production date from the expiration date gives the number of days the product has been in existence.
@@ -148,7 +148,7 @@ The `FROM` statement specifies the data source table used for information extrac
 
 You can see the complete configuration in this [*fct_product_age.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_product_age.sql)
 
-### Data Model 2
+# Data Model 2
 
 `COALESCE(count(stg_product.category_id), 0) AS product_count` This is a `COUNT` aggregation function that counts the number of products in each category. The `COALESCE` function is used to replace the NULL value with 0 if no products are found in the category.
 
@@ -164,7 +164,7 @@ You can see the complete configuration in this [*fct_product_age.sql*](https://g
 
 You can see the complete configuration in this [*fct_category_statistic.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_category_statistic.sql)
 
-### Data Model 3
+# Data Model 3
 
 `LEFT JOIN` Performs a join with the LEFT JOIN type, which will return all rows from the left table `(stg_stock)` and matching rows from the right table `(stg_product)`. If there is no correspondence, the columns of the right table will be filled with NULL values.
 
@@ -174,7 +174,7 @@ You can see the complete configuration in this [*fct_category_statistic.sql*](ht
 
 You can see the complete configuration in this [*fct_available_stock.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_available_stock.sql)
 
-### Data Model 4
+# Data Model 4
 
 `LEFT JOIN` Performs a join with the LEFT JOIN type, which will return all rows from the left table `(stg_transaction)` and matching rows from the right table `(stg_product)`. If there is no correspondence, the columns of the right table will be filled with NULL values.
 
@@ -184,13 +184,13 @@ You can see the complete configuration in this [*fct_available_stock.sql*](https
 
 You can see the complete configuration in this [*fct_transaction_product.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_transaction_product.sql)
 
-### Data Model 5
+# Data Model 5
 
 This entire query retrieves two columns (date and transaction_amount) from the stg_transaction table. The column names and aliases provided are only names for query results and do not affect the data retrieved from the table.
 
 You can see the complete configuration in this [*fct_time_analysis.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_time_analysis.sql)
 
-### Schema of the Data Model
+# Schema of the Data Model
 
 The explanation below covers all models:
 
@@ -208,6 +208,8 @@ The columns include (columns):
 The test include (tests):
 
 `dbt_expectations.expect_table_row_count_to_equal_other_table` : Checks the row count of this model and compares it to the row count of the stg_product table or model. Some optional parameters are used such as group_by, compare_group_by, factor, row_condition, and compare_row_condition.
+
+You can see the complete configuration in this [*schema.yml*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/schema.yml)
 
 ### Running the DBT on airflow
 
