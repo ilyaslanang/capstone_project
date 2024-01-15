@@ -195,6 +195,7 @@ You can see the complete configuration in this [*fct_time_analysis.sql*](https:/
 The explanation below covers all models:
 
 Model `fct_product_age` :
+
 Description: Staging model for product age.
 
 
