@@ -49,8 +49,12 @@ ___
 ___
 
 ### metabase (httpp://localhost:3000/):
-* 
 
+* port: using `ipconfig` command, it's different every local
+* username: ingest
+* pass: ingest
+* port_pg: 5445
+* database: ingest
 
 ___
 
@@ -113,9 +117,8 @@ ___
 
 ## Transform and Load
 
-For this two step, DBT tools are used inside the airflow.  
-First we need to make a folder for dbt-profiles and dbt_project.  
-inside the dbt project, we need to run this command:  
+For this two step, DBT tools are used inside the airflow.    
+We need to run this command:  
 `dbt init`  
 This command will trigger to create a profiles if you haven't one.  
 Fill the configuration with this values:  
