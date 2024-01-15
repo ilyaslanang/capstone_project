@@ -139,6 +139,20 @@ We need to run this command to install package.yml which is used to run dbt expe
 `dbt deps`  
 You can see the complete configuration in this [*package.yml* ](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/packages.yml)
 
+Before configuring the model, it is necessary to define the model in `dbt_project.yml`
+
+`dbt_project` : project or target name. In this context, "dbt_project" is the label for the definition of specific dbt models.
+dbt-project:
+* `schema: public` : This configuration specifies the database schema that will be used for the underlying models.
+* `database:ingest` : Indicates the name of the database to use.
+dbt-stg:
+* `materialized: table` : Specifies that this model will be materialized as a table.
+* `schema: _stg` : Database schema for this model.
+* `database:ingest` : The name of the database used. In this example, the database used is "ingest".
+
+You can see the complete configuration in this [*dbt_project.yml* ](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/dbt_project.yml)
+
+         
 # Data Model 1
 
 
@@ -170,7 +184,7 @@ You can see the complete configuration in this [*fct_category_statistic.sql*](ht
 
 `ON stg_product.product_id = stg_stock.product_id` Specifies the merge condition based on the product_id column
 
-`ORDER BY product_id` This clause sorts query results based on the product_id column in ascending order (default). So, the results will be sorted by product ID.
+`ORDER BY product_id` This script sorts query results based on the product_id column in ascending order (default). So, the results will be sorted by product ID.
 
 You can see the complete configuration in this [*fct_available_stock.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_available_stock.sql)
 
@@ -180,7 +194,7 @@ You can see the complete configuration in this [*fct_available_stock.sql*](https
 
 `ON stg_product.product_id = stg_transaction.product_id` Specifies the merge condition based on the product_id column.
 
-`ORDER BY transaction_id` This clause sorts query results based on the `transaction_id` column in ascending order (default). So, the results will be sorted based on transaction ID.
+`ORDER BY transaction_id` This script sorts query results based on the `transaction_id` column in ascending order (default). So, the results will be sorted based on transaction ID.
 
 You can see the complete configuration in this [*fct_transaction_product.sql*](https://github.com/ilyaslanang/capstone_project/blob/main/dbt_project/models/dbt-fct/fct_transaction_product.sql)
 
